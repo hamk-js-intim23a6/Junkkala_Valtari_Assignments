@@ -1,0 +1,27 @@
+[
+    {
+        "question": "Which is the largest planet in our Solar System?",
+        "choices": ["Earth", "Jupiter", "Saturn", "Neptune"],
+        "answer": "Jupiter"
+    },
+    {
+        "question": "What is the name of the first human to walk on the Moon?",
+        "choices": ["Yuri Gagarin", "Buzz Aldrin", "Neil Armstrong", "Michael Collins"],
+        "answer": "Neil Armstrong"
+    },
+    {
+        "question": "Which planet has the most extensive ring system?",
+        "choices": ["Uranus", "Neptune", "Jupiter", "Saturn"],
+        "answer": "Saturn"
+    },
+    {
+        "question": "What is the hottest planet in the Solar System?",
+        "choices": ["Mercury", "Venus", "Mars", "Earth"],
+        "answer": "Venus"
+    },
+    {
+        "question": "What is the name of the galaxy that contains our Solar System?",
+        "choices": ["Andromeda Galaxy", "Milky Way Galaxy", "Triangulum Galaxy", "Whirlpool Galaxy"],
+        "answer": "Milky Way Galaxy"
+    }
+]
