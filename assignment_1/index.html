@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form-a-lot</title>
+    <style>
+        form {
+            padding-bottom: 16px;
+            border-bottom: 2px solid gray;
+        }
+
+        .field-label {
+            width: 200px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <form onsubmit="formSubmitted(event)">
+        <label class="field-label" for="name">Full name</label>
+        <input type="text" autocomplete="name" name="name" id="name" placeholder="First name Last name" required maxlength="80" size="60">
+        <br>
+
+        <label class="field-label">Password</label>
+        <input type="password" name="password" id="password" required minlength="8" maxlength="20" pattern="[a-zA-Z0-9_,\.\?!]+">
+        <br>
+
+        <label class="field-label" for="password-repeated">Password Repeated</label>
+        <input type="password" name="password-repeated" id="password-repeated" required minlength="8" maxlength="20" pattern="[a-zA-Z0-9_,\.\?!]+">
+        <br>
+
+        <label class="field-label">Gender</label>
+        <input type="radio" name="gender" id="male" value="male" required><label for="male">male</label>
+        <input type="radio" name="gender" id="female" value="female" required><label for="female">female</label>
+        <input type="radio" name="gender" id="other" value="other" required><label for="other">other</label>
+        <br>
+
+        <label class="field-label">Hobbies</label>
+        <input type="checkbox" name="hobbies" id="games" value="games"><label for="games">games</label>
+        <input type="checkbox" name="hobbies" id="music" value="music"><label for="music">music</label>
+        <input type="checkbox" name="hobbies" id="sports" value="sports"><label for="sports">sports</label>
+        <input type="checkbox" name="hobbies" id="TV" value="TV"><label for="TV">TV</label>
+        <br>
+
+        <label class="field-label" for="birth-date">Birth Date</label>
+        <input type="date" name="birth-date" id="birth-date">
+        <br>
+
+        <label class="field-label" for="height-field">Height</label>
+        <input type="range" min="40" max="300" oninput="onHeightChange(event)" name="height" id="height-slider" value="180">
+        <input type="number" min="40" max="300" oninput="onHeightChange(event)" name="height" id="height-field" value="180">
+        <br>
+
+        <label class="field-label" for="favorite-color">Favorite Color</label>
+        <input type="color" name="favorite-color" id="favorite-color" >
+        <br>
+
+        <label class="field-label">Home Country</label>
+        <select id="home-country" name="home-country">
+            <option value="finland">Finland</option>
+            <option value="russia">Russia</option>
+
+            <optgroup label="Scandinavia">
+                <option value="denmark">Denmark</option>
+                <option value="norway">Norway</option>
+                <option value="sweden">Sweden</option>
+            </optgroup>
+            <optgroup label="Batlics">
+                <option value="estonia">Estonia</option>
+                <option value="latvia">Latvia</option>
+                <option value="lithuania">Lithuania</option>
+            </optgroup>
+        </select>
+        <br>
+
+        <label class="field-label" for="profession">Profession</label>
+        <input type="text" list="profession-list" autocomplete="name" name="profession" id="profession">
+        <datalist id="profession-list">
+            <option value="teacher"></option>
+            <option value="nurse"></option>
+            <option value="plumber"></option>
+            <option value="bureaucrat"></option>
+        </datalist>
+        <br>
+
+
+        <label class="field-label" for="message">Message</label>
+        <textarea name="message" id="message" required maxlength="1000" placeholder="Type here your message. Max 1000 characters." rows="6" cols="60"></textarea>
+        <br>
+        
+        <label class="field-label" for="submit"></label>
+        <button>Send</button>
+        <br>
+    </form>
+    <p id="result">Result:</p>
+</body>
+</html>
+<script>
+    const heightSlider = document.getElementById("height-slider");
+    const heightField = document.getElementById("height-field");
+    const resultElement = document.getElementById("result");
+
+    function onHeightChange(event) {
+        let newHeight = event.target.value;
+        if(heightSlider.value != newHeight)
+        {
+            heightSlider.value = newHeight;   
+        }
+        if(heightField.value != newHeight)
+        {
+            heightField.value = newHeight;   
+        }
+    }
+
+    function formSubmitted(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+
+        if(formData.get("password") !== formData.get("password-repeated"))
+        {
+            alert("PASSWORD MUST MATCH");
+            return;
+        }
+
+        let output = "Result:";
+        output += "\nName: " + formData.get("name");
+        output += "\nPassword: " + formData.get("password");
+        output += "\nPassword2: " + formData.get("password-repeated");
+        output += "\nGender: " + formData.get("gender");
+
+        let hobbies = formData.getAll("hobbies");
+        if(hobbies.length > 0)
+        {
+            output += "\nHobbies: " + hobbies.join(", ");
+        }
+        output += "\nBirth Date: " + formData.get("birth-date");
+        output += "\nHeight: " + formData.get("height");
+        output += "\nFavorite Color: " + formData.get("favorite-color");
+        output += "\nProfession: " + formData.get("profession");
+        output += "\nMessage:\n " + formData.get("message");
+
+        resultElement.innerText = output;
+    }
+
+</script>
