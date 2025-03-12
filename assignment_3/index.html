@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Plotter</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let chart;
+
+        function calculateAndPlot() {
+            if(chart === undefined)
+            {            
+                const ctx = document.getElementById('chart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { title: { display: true, text: 'x' } },
+                            y: { title: { display: true, text: 'y' } }
+                        }
+                    }
+                });
+            }
+
+            const funcStr = document.getElementById('func').value;
+            const xStart = parseFloat(document.getElementById('xStart').value);
+            const xEnd = parseFloat(document.getElementById('xEnd').value);
+            const xStep = parseFloat(document.getElementById('xStep').value);
+            const yScale = parseFloat(document.getElementById('yScale').value);
+            
+            if(isNaN(xStart) || isNaN(xEnd) || isNaN(xStep) || isNaN(yScale))
+            {
+                alert("values must be numerical");
+                return;
+            }
+
+            if(xStart > xEnd)
+            {
+                alert("Start must be less than End");
+                return;
+            }
+
+            if(xStep <= 0)
+            {
+                alert("x Step must be greater than zero");
+                return;
+            }
+
+            let func = undefined;
+            with (Math) { 
+                func = (x) => eval(`${funcStr}`);
+            }
+
+            if(xStart < xEnd && xStep < 0)
+            {
+                xStep = Math.abs(xStep);
+            }
+            if(xStart > xEnd && xStep > 0)
+            {
+                xStep = -Math.abs(xStep);
+            }
+
+            let xValues = [];
+            let yValues = [];
+            let yValuesRaw = []
+
+            // used to negate floating point error
+            const decimalPlaces = Math.max((xStep-Math.floor(xStep)).toString().length - 2, 0);
+            xStepMagnitudeDivider = Math.pow(10, decimalPlaces);
+            for (let rawX = xStart; rawX <= xEnd; rawX += xStep) {
+                let x = Math.round(rawX * xStepMagnitudeDivider) / xStepMagnitudeDivider;
+                xValues.push(x);
+                try {
+                    y = func(x);
+                    yValuesRaw.push(y);
+                    yValues.push(y*yScale);
+                } catch (error) {
+                    alert("Invalid function expression.");
+                    return;
+                }
+            }
+            
+            chart.data = {
+                labels: xValues,
+                datasets: [{
+                    label: `y = x * x`,
+                    data: yValues,
+                    borderColor: 'blue',
+                    fill: false
+                }]
+            },
+            chart.update();
+
+            document.getElementById("result").innerText = xValues.map((val, index) => `f(${val}) = ${yValuesRaw[index]}`).join("\n")
+        }
+    </script>
+</head>
+<body>
+    <h2>Function Plotter</h2>
+    <form id="functionForm">
+        <label>Function (use x): <input type="text" id="func" value="x*x"></label><br>
+        <label>Start of x range: <input type="number" id="xStart" value="0"></label><br>
+        <label>End of x range: <input type="number" id="xEnd" value="10"></label><br>
+        <label>x Step: <input type="number" id="xStep" value="1"></label><br>
+        <label>y Scale Factor: <input type="number" id="yScale" value="1"></label><br>
+        <button type="button" onclick="calculateAndPlot()">Calculate</button>
+    </form>
+    
+    <canvas id="chart"></canvas>
+
+    <p id="result"></p>
+</body>
+</html>
